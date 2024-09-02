@@ -20,12 +20,15 @@ import libvirt  # type: ignore
 import pycdlib  # type: ignore
 import yaml
 
+from lisa import feature
+from lisa.sut_orchestrator.azure.platform_ import AzurePlatform # type: ignore
 from lisa import schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
+from lisa.sut_orchestrator.libvirt.features import SecurityProfile
 from lisa.tools import (
     Chmod,
     Chown,
@@ -41,7 +44,7 @@ from lisa.tools import (
     Uname,
     Whoami,
 )
-from lisa.util import LisaException, constants, get_public_key_data
+from lisa.util import LisaException, NotMeetRequirementException, constants, get_public_key_data
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
 
 from . import libvirt_events_thread
@@ -88,6 +91,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
     _supported_features: List[Type[Feature]] = [
         SerialConsole,
         StartStop,
+        SecurityProfile,
     ]
 
     def __init__(self, runbook: schema.Platform) -> None:
