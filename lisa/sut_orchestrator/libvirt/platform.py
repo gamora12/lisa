@@ -20,7 +20,6 @@ import libvirt  # type: ignore
 import pycdlib  # type: ignore
 import yaml
 
-
 from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
@@ -578,8 +577,9 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
             self._log.debug(f"==>f: {f}")
             feature_type.on_before_deployment(
                 environment=environment,
-                log=log, 
-                settings=f,)
+                log=log,
+                settings=f,
+            )
 
         for node in environment.nodes.list():
             node_context = get_node_context(node)

@@ -8,7 +8,7 @@ from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 from lisa.util import field_metadata
-from lisa.node import Node, RemoteNode
+from lisa.node import Node
 
 
 class AzureFeatureMixin:
@@ -16,7 +16,7 @@ class AzureFeatureMixin:
         node_context = get_node_context(node)
         self._vm_name = node_context.vm_name
         self._resource_group_name = node_context.resource_group_name
-        
+
 @dataclass_json()
 @dataclass()
 class SecurityProfileSettings(features.SecurityProfileSettings):
@@ -66,7 +66,7 @@ class SecurityProfile(features.SecurityProfile):
     def settings_type(cls) -> Type[schema.FeatureSettings]:
         return SecurityProfileSettings
     
-    def on_before_deployment(self, cls, *args: Any, **kwargs: Any) -> None:
+    def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
         security_profile = [kwargs.get("settings")]
 
