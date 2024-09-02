@@ -11,14 +11,15 @@ from lisa.util import field_metadata
 from lisa.node import Node
 
 
+
+
+@dataclass_json()
+@dataclass()
 class AzureFeatureMixin:
     def _initialize_information(self, node: Node) -> None:
         node_context = get_node_context(node)
         self._vm_name = node_context.vm_name
-        self._resource_group_name = node_context.resource_group_name
 
-@dataclass_json()
-@dataclass()
 class SecurityProfileSettings(features.SecurityProfileSettings):
     disk_encryption_set_id: str = field(
         default="",
@@ -52,7 +53,7 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
 
         return value
 
-class SecurityProfile(features.SecurityProfile):
+class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
     _security_profile_mapping = {
         SecurityProfileType.Standard: "",
         SecurityProfileType.CVM: "ConfidentialVM",
