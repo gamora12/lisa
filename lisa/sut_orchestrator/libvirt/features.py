@@ -1,13 +1,14 @@
 from dataclasses import dataclass, field
-from typing import Any, List, Optional, Type, Union, cast
+from typing import Any, Type, cast
 
 from dataclasses_json import dataclass_json
 
 from lisa import features, schema, search_space
 from lisa.environment import Environment
-from lisa.features.security_profile import FEATURE_NAME_SECURITY_PROFILE, SecurityProfileType
+from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 from lisa.util import field_metadata
+
 
 @dataclass_json()
 @dataclass()
@@ -37,7 +38,6 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
         value = SecurityProfileSettings()
         value.security_profile = super_value.security_profile
         value.encrypt_disk = super_value.encrypt_disk
-
         if self.disk_encryption_set_id:
             value.disk_encryption_set_id = self.disk_encryption_set_id
         else:
@@ -59,13 +59,12 @@ class SecurityProfile(features.SecurityProfile):
     def settings_type(cls) -> Type[schema.FeatureSettings]:
         return SecurityProfileSettings
     
-    def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
+    def on_before_deployment(self, cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
         security_profile = [kwargs.get("settings")]
 
         for node in environment.nodes._list:
             assert node.capability.features
-        
             if security_profile:
                 settings = security_profile[0]
                 assert isinstance(settings, SecurityProfileSettings)
