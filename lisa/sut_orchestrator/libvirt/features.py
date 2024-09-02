@@ -8,8 +8,15 @@ from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 from lisa.util import field_metadata
+from lisa.node import Node, RemoteNode
 
 
+class AzureFeatureMixin:
+    def _initialize_information(self, node: Node) -> None:
+        node_context = get_node_context(node)
+        self._vm_name = node_context.vm_name
+        self._resource_group_name = node_context.resource_group_name
+        
 @dataclass_json()
 @dataclass()
 class SecurityProfileSettings(features.SecurityProfileSettings):
@@ -44,7 +51,7 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
             value.disk_encryption_set_id = capability.disk_encryption_set_id
 
         return value
-    
+
 class SecurityProfile(features.SecurityProfile):
     _security_profile_mapping = {
         SecurityProfileType.Standard: "",
@@ -73,5 +80,3 @@ class SecurityProfile(features.SecurityProfile):
                 node_context.guest_vm_type = cls._security_profile_mapping[
                     settings.security_profile
                 ]
-
-
