@@ -114,13 +114,12 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
         os_type = ET.SubElement(os, "type")
         os_type.text = "hvm"
 
-        if(node_context.guest_vm_type == "NON-CVM"):
+        if node_context.guest_vm_type == "NON-CVM":
             os_kernel = ET.SubElement(os, "kernel")
             os_kernel.text = node_context.firmware_path
         else:
             os_kernel = ET.SubElement(os, "snp")
             os_kernel.text = "on"
-
 
         devices = ET.SubElement(domain, "devices")
 

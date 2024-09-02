@@ -20,8 +20,8 @@ import libvirt  # type: ignore
 import pycdlib  # type: ignore
 import yaml
 
-from lisa import feature
-from lisa import schema, search_space
+
+from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
@@ -43,7 +43,8 @@ from lisa.tools import (
     Uname,
     Whoami,
 )
-from lisa.util import LisaException, NotMeetRequirementException, constants, get_public_key_data
+from lisa.util import LisaException, NotMeetRequirementException
+from lisa.util import constants, get_public_key_data
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
 
 from . import libvirt_events_thread
@@ -555,8 +556,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 new_settings = search_space.SetSpace[schema.FeatureSettings](is_allow_set=True)
                 for current_settings in node.capability.features.items:
                     try:
-                        settings_type = feature.get_settings_type_by_name(current_settings.type, BaseLibvirtPlatform.supported_features()
-                        )
+                        settings_type = feature.get_settings_type_by_name(current_settings.type, BaseLibvirtPlatform.supported_features())
                     except NotMeetRequirementException as identifier:
                         raise LisaException(
                             f"platform doesn't support all features. {identifier}"
