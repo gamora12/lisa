@@ -555,17 +555,19 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 new_settings = search_space.SetSpace[schema.FeatureSettings](is_allow_set=True)
                 for current_settings in node.capability.features.items:
                     try:
-                        settings_type = feature.get_feature_settings_type_by_name(current_settings.type, BaseLibvirtPlatform.supported_features())
+                        settings_type = feature.get_feature_settings_type_by_name(
+                            current_settings.type, BaseLibvirtPlatform.supported_features()
+                            )
                     except NotMeetRequirementException as identifier:
                         raise LisaException(
                             f"platform doesn't support all features. {identifier}"
                         )
                     new_setting = schema.load_by_type(settings_type, current_settings)
                     existing_setting = feature.get_feature_settings_by_name(
-                        new_setting.type, feature_settings, True
+                        new_setting.type, new_settings, True
                     )
                     if existing_setting:
-                        new_setting.remove(existing_setting)
+                        new_settings.remove(existing_setting)
                         new_setting = existing_setting.intersect(new_setting)
                     new_settings.add(new_setting)
                 node.capability.features = new_settings
