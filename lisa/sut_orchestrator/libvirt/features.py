@@ -64,7 +64,7 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
     def settings_type(cls) -> Type[schema.FeatureSettings]:
         return SecurityProfileSettings
     
-    def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
+    def on_before_deployment(cls, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
         security_profile = [kwargs.get("settings")]
 
@@ -76,5 +76,5 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
                 assert isinstance(settings.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
                 node_context.guest_vm_type = cls._security_profile_mapping[
-                    setting.security_profile
+                    settings.security_profile
                 ]
