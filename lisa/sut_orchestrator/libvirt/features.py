@@ -66,7 +66,7 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
     
     def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
-        security_profile = [kwargs.get("settings")]
+        settings = kwargs.get("settings")
 
         for node in environment.nodes._list:
             assert node.capability.features
