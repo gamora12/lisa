@@ -64,7 +64,7 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
     def settings_type(cls) -> Type[schema.FeatureSettings]:
         return SecurityProfileSettings
     
-    def on_before_deployment(cls, **kwargs: Any) -> None:
+    def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
         security_profile = [kwargs.get("settings")]
 

@@ -548,7 +548,6 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         log: Logger,
     ) -> None:
         self.host_node.shell.mkdir(Path(self.vm_disks_dir), exist_ok=True)
-        feature_settings: Dict[str, schema.FeatureSettings] = {}
         for node in environment.nodes.list():
             self._log.debug(f"==>node: {node.name}")
             if node.capability.features:
