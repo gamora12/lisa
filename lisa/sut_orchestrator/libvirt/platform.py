@@ -548,7 +548,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         log: Logger,
     ) -> None:
         self.host_node.shell.mkdir(Path(self.vm_disks_dir), exist_ok=True)
-        feauture_settings: Dict[str, schema.FeautureSettings] = {}
+        feature_settings: Dict[str, schema.FeatureSettings] = {}
         for node in environment.nodes.list():
             self._log.debug(f"==>node: {node.name}")
             if node.capability.features:
@@ -562,7 +562,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                         )
                     new_setting = schema.load_by_type(settings_type, current_settings)
                     existing_setting = feature.get_feature_settings_by_name(
-                        new_setting.type, feauture_settings, True
+                        new_setting.type, feature_settings, True
                     )
                     if existing_setting:
                         new_setting.remove(existing_setting)
