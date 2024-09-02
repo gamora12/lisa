@@ -70,6 +70,11 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
 
         for node in environment.nodes._list:
             assert node.capability.features
+            security_profile = [
+                feature_setting
+                for feature_setting in node.capability.features.items
+                if feature_setting.type == FEATURE_NAME_SECURITY_PROFILE
+            ]
             if security_profile:
                 settings = security_profile[0]
                 assert isinstance(settings, SecurityProfileSettings)
