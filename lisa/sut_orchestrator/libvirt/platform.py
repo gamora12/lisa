@@ -43,10 +43,10 @@ from lisa.tools import (
     Whoami,
 )
 from lisa.util import (
-    LisaException
-    NotMeetRequirementException
-    constants
-    get_public_key_data
+    LisaException,
+    NotMeetRequirementException,
+    constants,
+    get_public_key_data,
 )
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
 
