@@ -5,13 +5,13 @@ from dataclasses_json import dataclass_json
 
 from lisa import features, schema, search_space
 from lisa.environment import Environment
+from lisa.sut_orchestrator.libvirt.context import get_node_context
+from lisa.node import Node
+from lisa.util import field_metadata
 from lisa.features.security_profile import (
     FEATURE_NAME_SECURITY_PROFILE,
     SecurityProfileType,
 )
-from lisa.sut_orchestrator.libvirt.context import get_node_context
-from lisa.node import Node
-from lisa.util import field_metadata
 
 
 @dataclass_json()
@@ -69,7 +69,7 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
     @classmethod
     def settings_type(cls) -> Type[schema.FeatureSettings]:
         return SecurityProfileSettings
-    
+
     @classmethod
     def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
