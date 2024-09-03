@@ -5,7 +5,10 @@ from dataclasses_json import dataclass_json
 
 from lisa import features, schema, search_space
 from lisa.environment import Environment
-from lisa.features.security_profile import SecurityProfileType
+from lisa.features.security_profile import (
+    FEATURE_NAME_SECURITY_PROFILE,
+    SecurityProfileType,
+)
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 from lisa.util import field_metadata
 from lisa.node import Node
