@@ -10,8 +10,9 @@ from lisa.features.security_profile import (
     SecurityProfileType,
 )
 from lisa.sut_orchestrator.libvirt.context import get_node_context
-from lisa.util import field_metadata
 from lisa.node import Node
+from lisa.util import field_metadata
+
 
 @dataclass_json()
 @dataclass()
@@ -19,6 +20,7 @@ class AzureFeatureMixin:
     def _initialize_information(self, node: Node) -> None:
         node_context = get_node_context(node)
         self._vm_name = node_context.vm_name
+
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
     disk_encryption_set_id: str = field(
@@ -52,6 +54,7 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
             value.disk_encryption_set_id = capability.disk_encryption_set_id
 
         return value
+
 
 class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
     _security_profile_mapping = {
