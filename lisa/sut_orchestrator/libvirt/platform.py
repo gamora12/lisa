@@ -555,12 +555,15 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         for node in environment.nodes.list():
             self._log.debug(f"==>node: {node.name}")
             if node.capability.features:
-                new_settings = search_space.SetSpace[schema.FeatureSettings](is_allow_set=True)
+                new_settings = search_space.SetSpace[schema.FeatureSettings](
+                    is_allow_set=True
+                )
                 for current_settings in node.capability.features.items:
                     try:
                         settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type, BaseLibvirtPlatform.supported_features()
-                            )
+                            current_settings.type, 
+                            BaseLibvirtPlatform.supported_features()
+                        )
                     except NotMeetRequirementException as identifier:
                         raise LisaException(
                             f"platform doesn't support all features. {identifier}"
