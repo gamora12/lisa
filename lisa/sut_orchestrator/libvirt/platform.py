@@ -561,7 +561,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 for current_settings in node.capability.features.items:
                     try:
                         settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type, 
+                            current_settings.type,
                             BaseLibvirtPlatform.supported_features()
                         )
                     except NotMeetRequirementException as identifier:
