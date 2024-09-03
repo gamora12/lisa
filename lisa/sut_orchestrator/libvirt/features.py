@@ -10,8 +10,8 @@ from lisa.features.security_profile import (
     SecurityProfileType,
 )
 from lisa.node import Node
-from lisa.util import field_metadata
 from lisa.sut_orchestrator.libvirt.context import get_node_context
+from lisa.util import field_metadata
 
 
 @dataclass_json()
