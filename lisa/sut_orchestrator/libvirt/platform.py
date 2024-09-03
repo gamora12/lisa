@@ -42,8 +42,12 @@ from lisa.tools import (
     Uname,
     Whoami,
 )
-from lisa.util import LisaException, NotMeetRequirementException
-from lisa.util import constants, get_public_key_data
+from lisa.util import (
+    LisaException
+    NotMeetRequirementException
+    constants
+    get_public_key_data
+)
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
 
 from . import libvirt_events_thread
