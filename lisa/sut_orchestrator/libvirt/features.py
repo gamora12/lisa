@@ -9,6 +9,7 @@ from lisa.features.security_profile import SecurityProfileType
 from lisa.node import Node
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 
+
 @dataclass_json()
 @dataclass()
 class AzureFeatureMixin:
@@ -25,7 +26,6 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
     def _get_key(self) -> str:
         return (
             f"{self.type}/{self.security_profile}/"
-            f"{self.encrypt_disk}/{self.disk_encryption_set_id}"
         )
 
     def _call_requirement_method(
@@ -63,18 +63,10 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
             if security_profile:
                 setting = security_profile[0]
                 assert isinstance(setting, SecurityProfileSettings)
-                profile_type = setting.security_profile
-                if isinstance(security_profile, search_space.SetSpace):
-                    if security_profile.items:
-                        profile_type = next(iter(security_profile.items))
-                    else:
-                        raise ValueError(
-                            "SetSpace is empty; cannot determine SecurityProfileType."
-                        )
-                else:
-                    profile_type = security_profile
-
+                print(f"====>>>> settings.security_profile {setting.security_profile}")
+                print(f"====>>>> settings.security_profile-type {type(setting.security_profile)}")
+                assert isinstance(setting.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
                 node_context.guest_vm_type = cls._security_profile_mapping[
-                    profile_type
+                    setting.security_profile
                 ]
