@@ -44,12 +44,6 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
         )
         value = SecurityProfileSettings()
         value.security_profile = super_value.security_profile
-        value.encrypt_disk = super_value.encrypt_disk
-        if self.disk_encryption_set_id:
-            value.disk_encryption_set_id = self.disk_encryption_set_id
-        else:
-            value.disk_encryption_set_id = capability.disk_encryption_set_id
-
         return value
 
 
@@ -77,7 +71,6 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
             if security_profile:
                 setting = security_profile[0]
                 assert isinstance(setting, SecurityProfileSettings)
-                assert isinstance(setting.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
                 node_context.guest_vm_type = cls._security_profile_mapping[
                     setting.security_profile
