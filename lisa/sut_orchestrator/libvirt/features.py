@@ -20,12 +20,6 @@ class AzureFeatureMixin:
 
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
-    disk_encryption_set_id: str = field(
-        default="",
-        metadata=field_metadata(
-            required=False,
-        ),
-    )
 
     def __hash__(self) -> int:
         return hash(self._get_key())
@@ -71,7 +65,16 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
             if security_profile:
                 setting = security_profile[0]
                 assert isinstance(setting, SecurityProfileSettings)
+                profile_type
+                if isinstance(security_profile, search_space.SetSpace):
+                    if security_profile.items:
+                        profile_type = next(iter(security_profile.items))
+                    else:
+                        raise ValueError("SetSpace is empty; cannot determine SecurityProfileType.")
+                else:
+                    profile_type = security_profile
+                
                 node_context = get_node_context(node)
                 node_context.guest_vm_type = cls._security_profile_mapping[
-                    setting.security_profile
+                    profile_type
                 ]
