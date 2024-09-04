@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Type, cast
 
 from dataclasses_json import dataclass_json
@@ -8,8 +8,6 @@ from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
 from lisa.node import Node
 from lisa.sut_orchestrator.libvirt.context import get_node_context
-from lisa.util import field_metadata
-
 
 @dataclass_json()
 @dataclass()
@@ -65,15 +63,17 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
             if security_profile:
                 setting = security_profile[0]
                 assert isinstance(setting, SecurityProfileSettings)
-                profile_type
+                profile_type = setting.security_profile
                 if isinstance(security_profile, search_space.SetSpace):
                     if security_profile.items:
                         profile_type = next(iter(security_profile.items))
                     else:
-                        raise ValueError("SetSpace is empty; cannot determine SecurityProfileType.")
+                        raise ValueError(
+                            "SetSpace is empty; cannot determine SecurityProfileType."
+                        )
                 else:
                     profile_type = security_profile
-                
+
                 node_context = get_node_context(node)
                 node_context.guest_vm_type = cls._security_profile_mapping[
                     profile_type
