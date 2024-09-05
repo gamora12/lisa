@@ -68,10 +68,12 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
                 if isinstance(security_profile, search_space.SetSpace):
                     if security_profile.items:
                         node_context.guest_vm_type = cls._security_profile_mapping[
-                    next(iter(security_profile.items))
-                ]
+                            next(iter(security_profile.items))
+                        ]
+                    else:
+                        raise Exception("security_profile is empty")
                 else:
                     node_context.guest_vm_type = cls._security_profile_mapping[
-                    next(iter(security_profile.items))
+                        next(iter(security_profile.items))
                 ]
          
