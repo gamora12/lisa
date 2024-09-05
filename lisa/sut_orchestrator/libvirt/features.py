@@ -23,7 +23,7 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
         return hash(self._get_key())
 
     def _get_key(self) -> str:
-        return (
+        return(
             f"{self.type}/{self.security_profile}/"
         )
 
