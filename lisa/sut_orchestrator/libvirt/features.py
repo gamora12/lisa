@@ -63,9 +63,15 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
             if security_profile:
                 setting = security_profile[0]
                 assert isinstance(setting, SecurityProfileSettings)
-                print(f"settings.security_profile {setting.security_profile}")
-                assert isinstance(setting.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
-                node_context.guest_vm_type = cls._security_profile_mapping[
-                    setting.security_profile
+                print(f"settings.security_profile {setting.security_profile}")
+                if isinstance(security_profile, search_space.SetSpace):
+                    if security_profile.items:
+                        node_context.guest_vm_type = cls._security_profile_mapping[
+                    next(iter(security_profile.items))
                 ]
+                else:
+                    node_context.guest_vm_type = cls._security_profile_mapping[
+                    next(iter(security_profile.items))
+                ]
+         
