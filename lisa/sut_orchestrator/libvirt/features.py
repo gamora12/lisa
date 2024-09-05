@@ -19,7 +19,6 @@ class AzureFeatureMixin:
 
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
-
     def __hash__(self) -> int:
         return hash(self._get_key())
 
@@ -75,5 +74,4 @@ class SecurityProfile(AzureFeatureMixin, features.SecurityProfile):
                 else:
                     node_context.guest_vm_type = cls._security_profile_mapping[
                         next(iter(security_profile.items))
-                ]
-         
+                    ]
