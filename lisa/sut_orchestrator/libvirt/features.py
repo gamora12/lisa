@@ -19,7 +19,6 @@ class AzureFeatureMixin:
 
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
-
     def __hash__(self) -> int:
         return hash(self._get_key())
 
