@@ -7,7 +7,6 @@ from lisa.sut_orchestrator.libvirt.context import get_node_context
 
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
-
     def __hash__(self) -> int:
         return hash(self._get_key())
 
@@ -52,14 +51,14 @@ class SecurityProfile(features.SecurityProfile):
                 assert isinstance(setting, SecurityProfileSettings)
                 node_context = get_node_context(node)
                 print(f"setting.security_profile {setting.security_profile}")
-                if isinstance(setting.security_profile, search_space.SetSpace):
-                    if setting.security_profile.items:
+                if isinstance(security_profile, search_space.SetSpace):
+                    if security_profile.items:
                         node_context.guest_vm_type = cls._security_profile_mapping[
-                            next(iter(setting.security_profile.items))
+                            next(iter(security_profile.items))
                         ]
                     else:
                         raise Exception("security_profile is empty")
                 else:
                     node_context.guest_vm_type = cls._security_profile_mapping[
-                        next(iter(setting.security_profile.items))
+                        next(iter(security_profile.items))
                     ]
