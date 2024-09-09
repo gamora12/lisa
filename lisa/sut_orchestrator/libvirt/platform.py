@@ -20,7 +20,7 @@ import libvirt  # type: ignore
 import pycdlib  # type: ignore
 import yaml
 
-from lisa import feature, schema, search_space
+from lisa import schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
@@ -44,7 +44,6 @@ from lisa.tools import (
 )
 from lisa.util import (
     LisaException,
-    NotMeetRequirementException,
     constants,
     get_public_key_data,
 )
@@ -552,7 +551,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         log: Logger,
     ) -> None:
         self.host_node.shell.mkdir(Path(self.vm_disks_dir), exist_ok=True)
-        
+
         for node in environment.nodes.list():
             node_context = get_node_context(node)
             self._create_node(
