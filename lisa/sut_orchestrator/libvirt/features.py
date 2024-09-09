@@ -8,6 +8,7 @@ from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 
+
 @dataclass_json()
 @dataclass()
 class SecurityProfileSettings(features.SecurityProfileSettings):
@@ -56,14 +57,6 @@ class SecurityProfile(features.SecurityProfile):
                 assert isinstance(setting, SecurityProfileSettings)
                 node_context = get_node_context(node)
                 print(f"setting.security_profile {setting.security_profile}")
-                if isinstance(security_profile, search_space.SetSpace):
-                    if security_profile.items:
-                        node_context.guest_vm_type = cls._security_profile_mapping[
-                            next(iter(security_profile.items))
-                        ]
-                    else:
-                        raise Exception("security_profile is empty")
-                else:
-                    node_context.guest_vm_type = cls._security_profile_mapping[
-                        next(iter(security_profile.items))
+                node_context.guest_vm_type = cls._security_profile_mapping[
+                        setting.security_profile
                     ]
