@@ -6,7 +6,7 @@ from dataclasses_json import dataclass_json
 from lisa import features, schema, search_space
 from lisa.environment import Environment
 from lisa.features.security_profile import (
-    SecurityProfileType, 
+    SecurityProfileType,
     FEATURE_NAME_SECURITY_PROFILE,
 )
 from lisa.sut_orchestrator.libvirt.context import get_node_context
@@ -50,14 +50,13 @@ class SecurityProfile(features.SecurityProfile):
     @classmethod
     def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
-        security_profile = [
-            feature_setting
-            for feature_setting in node.capability.features.items
-            if feature_setting.type == FEATURE_NAME_SECURITY_PROFILE
-        ]
-
         for node in environment.nodes._list:
             assert node.capability.features
+            security_profile = [
+                feature_setting
+                for feature_setting in node.capability.features.items
+                if feature_setting.type == FEATURE_NAME_SECURITY_PROFILE
+            ]
             if security_profile:
                 settings = security_profile[0]
                 assert isinstance(settings, SecurityProfileSettings)
