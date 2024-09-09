@@ -562,7 +562,8 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                     # reload to type specified settings
                     try:
                         settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type, BaseLibvirtPlatform.supported_features()
+                            current_settings.type, 
+                            BaseLibvirtPlatform.supported_features(),
                         )
                     except NotMeetRequirementException as identifier:
                         raise LisaException(
@@ -578,16 +579,17 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                     new_settings.add(new_setting)
                 node.capability.features = new_settings
 
-        for f in node.capability.features:
-            feature_type = next(
-                x for x in self.supported_features() if x.name() == f.type
-            )
-            self._log.debug(f"==>f: {f}")
-            feature_type.on_before_deployment(
-                environment=environment,
-                log=log,
-                settings=f,
-            )
+                for f in node.capability.features:
+                    feature_type = next(
+                        x for x in self.supported_features() if x.name() == f.type
+                    )
+                    self._log.debug(f"==>f: {f}")
+                    feature_type.on_before_deployment(
+                        environment=environment,
+                        log=log,
+                        settings=f,
+                    )
+
         for node in environment.nodes.list():
             node_context = get_node_context(node)
             self._create_node(
