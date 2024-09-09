@@ -17,11 +17,10 @@ from threading import Lock, Timer
 from typing import Any, Dict, List, Optional, Tuple, Type, cast
 
 import libvirt  # type: ignore
-from lisa import feature
 import pycdlib  # type: ignore
 import yaml
 
-from lisa import schema, search_space
+from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
@@ -43,7 +42,12 @@ from lisa.tools import (
     Uname,
     Whoami,
 )
-from lisa.util import LisaException, NotMeetRequirementException, constants, get_public_key_data
+from lisa.util import (
+    LisaException,
+    NotMeetRequirementException,
+    constants,
+    get_public_key_data,
+)
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
 
 from . import libvirt_events_thread
@@ -548,7 +552,6 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         log: Logger,
     ) -> None:
         self.host_node.shell.mkdir(Path(self.vm_disks_dir), exist_ok=True)
-        features_settings: Dict[str, schema.FeatureSettings] = {}
         for node in environment.nodes.list():
             self._log.debug(f"==>node: {node.name}")
             if node.capability.features:
