@@ -1,17 +1,13 @@
-from dataclasses import dataclass
 from typing import Any, Type, cast
-
-from dataclasses_json import dataclass_json
 
 from lisa import features, schema, search_space
 from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
-from lisa.node import Node
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
-    
+
     def __hash__(self) -> int:
         return hash(self._get_key())
 
@@ -39,7 +35,7 @@ class SecurityProfile(features.SecurityProfile):
 
     def _initialize(self, *args: Any, **kwargs: Any) -> None:
         super()._initialize(*args, **kwargs)
-       
+
     @classmethod
     def settings_type(cls) -> Type[schema.FeatureSettings]:
         return SecurityProfileSettings
