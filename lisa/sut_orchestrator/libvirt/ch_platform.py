@@ -114,12 +114,8 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
         os_type = ET.SubElement(os, "type")
         os_type.text = "hvm"
 
-        if node_context.guest_vm_type == "NON-CVM":
-            os_kernel = ET.SubElement(os, "kernel")
-            os_kernel.text = node_context.firmware_path
-        else:
-            os_kernel = ET.SubElement(os, "snp")
-            os_kernel.text = "on"
+        os_kernel = ET.SubElement(os, "kernel")
+        os_kernel.text = node_context.firmware_path
 
         devices = ET.SubElement(domain, "devices")
 
@@ -158,7 +154,6 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
         )
 
         xml = ET.tostring(domain, "unicode")
-        self._log.debug(f"libvirt xml: {xml}")
         return xml
 
     def _get_domain_undefine_flags(self) -> int:
