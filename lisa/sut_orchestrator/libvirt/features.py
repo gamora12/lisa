@@ -1,4 +1,7 @@
+from dataclasses import dataclass
 from typing import Any, Type, cast
+
+from dataclasses_json import dataclass_json
 
 from lisa import features, schema, search_space
 from lisa.environment import Environment
@@ -7,6 +10,9 @@ from lisa.sut_orchestrator.libvirt.context import get_node_context
 
 
 class SecurityProfileSettings(features.SecurityProfileSettings):
+
+    @dataclass_json()
+    @dataclass()
     def __hash__(self) -> int:
         return hash(self._get_key())
 
