@@ -8,11 +8,10 @@ from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import get_node_context
 
-
+@dataclass_json()
+@dataclass()
 class SecurityProfileSettings(features.SecurityProfileSettings):
 
-    @dataclass_json()
-    @dataclass()
     def __hash__(self) -> int:
         return hash(self._get_key())
 
