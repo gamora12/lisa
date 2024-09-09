@@ -19,9 +19,7 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
         return hash(self._get_key())
 
     def _get_key(self) -> str:
-        return (
-            f"{self.type}/{self.security_profile}/"
-        )
+        return f"{self.type}/{self.security_profile}/"
 
     def _call_requirement_method(
         self, method: search_space.RequirementMethod, capability: Any
