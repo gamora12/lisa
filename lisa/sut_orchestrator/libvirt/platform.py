@@ -552,43 +552,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         log: Logger,
     ) -> None:
         self.host_node.shell.mkdir(Path(self.vm_disks_dir), exist_ok=True)
-        for node in environment.nodes.list():
-            self._log.debug(f"==>node: {node.name}")
-            if node.capability.features:
-                new_settings = search_space.SetSpace[schema.FeatureSettings](
-                    is_allow_set=True
-                )
-                for current_settings in node.capability.features.items:
-                    try:
-                        settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type,
-                            BaseLibvirtPlatform.supported_features(),
-                        )
-                    except NotMeetRequirementException as identifier:
-                        raise LisaException(
-                            f"platform doesn't support all features. {identifier}"
-                        )
-                    new_setting = schema.load_by_type(settings_type, current_settings)
-                    existing_setting = feature.get_feature_settings_by_name(
-                        new_setting.type, new_settings, True
-                    )
-                    if existing_setting:
-                        new_settings.remove(existing_setting)
-                        new_setting = existing_setting.intersect(new_setting)
-                    new_settings.add(new_setting)
-                node.capability.features = new_settings
-
-                for f in node.capability.features:
-                    feature_type = next(
-                        x for x in self.supported_features() if x.name() == f.type
-                    )
-                    self._log.debug(f"==>f: {f}")
-                    feature_type.on_before_deployment(
-                        environment=environment,
-                        log=log,
-                        settings=f,
-                    )
-
+        
         for node in environment.nodes.list():
             node_context = get_node_context(node)
             self._create_node(
