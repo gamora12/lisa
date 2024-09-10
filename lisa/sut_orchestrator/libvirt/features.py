@@ -60,7 +60,6 @@ class SecurityProfile(features.SecurityProfile):
                 assert isinstance(settings, SecurityProfileSettings)
                 assert isinstance(settings.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
-                print(f"setting.security_profile {settings.security_profile}")
                 node_context.guest_vm_type = cls._security_profile_mapping[
                     settings.security_profile
                 ]
