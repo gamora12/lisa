@@ -1,15 +1,17 @@
 from dataclasses import dataclass
-from typing import Any, Type, cast
+from typing import Any, Type, cast, Optional, List
 
 from dataclasses_json import dataclass_json
 
-from lisa import features, schema, search_space
+from lisa import feature, features, schema, search_space
 from lisa.environment import Environment
 from lisa.features.security_profile import (
     FEATURE_NAME_SECURITY_PROFILE,
     SecurityProfileType,
 )
 from lisa.sut_orchestrator.libvirt.context import get_node_context
+from .schema import BaseLibvirtNodeSchema
+from .. import CLOUD_HYPERVISOR
 
 
 @dataclass_json()
@@ -31,7 +33,6 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
         value.security_profile = super_value.security_profile
         return value
 
-
 class SecurityProfile(features.SecurityProfile):
     _security_profile_mapping = {
         SecurityProfileType.Standard: "",
@@ -48,18 +49,11 @@ class SecurityProfile(features.SecurityProfile):
     @classmethod
     def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
+        security_profile = [kwargs.get("settings")]
         for node in environment.nodes._list:
-            assert node.capability.features
-            security_profile = [
-                feature_setting
-                for feature_setting in node.capability.features.items
-                if feature_setting.type == FEATURE_NAME_SECURITY_PROFILE
-            ]
             if security_profile:
                 settings = security_profile[0]
                 assert isinstance(settings, SecurityProfileSettings)
                 assert isinstance(settings.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
-                node_context.guest_vm_type = cls._security_profile_mapping[
-                    settings.security_profile
-                ]
+                node_context.guest_vm_type = cls._security_profile_mapping[settings.security_profile]

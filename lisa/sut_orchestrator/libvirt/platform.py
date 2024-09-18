@@ -26,7 +26,7 @@ from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
-from lisa.sut_orchestrator.libvirt.features import SecurityProfile
+from lisa.sut_orchestrator.libvirt.features import SecurityProfile, SecurityProfileSettings
 from lisa.tools import (
     Chmod,
     Chown,
@@ -191,9 +191,38 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         _ = environment.log_path
 
         self._configure_environment(environment, log)
+        for node_space in environment.runbook.nodes_requirement:
+            if node_space.features:
+                new_settings = search_space.SetSpace[schema.FeatureSettings](is_allow_set=True)
 
+                for current_settings in node_space.features.items:
+                    # reload to type specified settings
+                    try:
+                        settings_type = feature.get_feature_settings_type_by_name(
+                            current_settings.type, BaseLibvirtPlatform.supported_features()
+                        )
+                    except NotMeetRequirementException as identifier:
+                        raise LisaException(
+                            f"platform doesn't support all features. {identifier}"
+                        )
+                    new_setting = schema.load_by_type(settings_type, current_settings)
+                    existing_setting = feature.get_feature_settings_by_name(
+                        new_setting.type, new_settings, True
+                    )
+                    if existing_setting:
+                        new_settings.remove(existing_setting)
+                        new_setting = existing_setting.intersect(new_setting)
+
+                    new_settings.add(new_setting)
+                node_space.features = new_settings
+                
         return self._configure_node_capabilities(environment, log)
 
+
+
+
+
+        
     def _deploy_environment(self, environment: Environment, log: Logger) -> None:
         self._deploy_nodes(environment, log)
 
@@ -235,7 +264,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
 
         host_capabilities = self._get_host_capabilities(log)
         nodes_capabilities = self._create_node_capabilities(host_capabilities)
-
+        features_runbook = environment.runbook.nodes_requirement[0].features
         nodes_requirement = []
         for node_space in environment.runbook.nodes_requirement:
             # Check that the general node capabilities are compatible with this node's
@@ -311,11 +340,12 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         node_capabilities.network_interface.max_nic_count = 1
         node_capabilities.network_interface.nic_count = 1
         node_capabilities.gpu_count = 0
+        security_profile_setting = SecurityProfileSettings()
         node_capabilities.features = search_space.SetSpace[schema.FeatureSettings](
             is_allow_set=True,
             items=[
                 schema.FeatureSettings.create(SerialConsole.name()),
-                schema.FeatureSettings.create(SecurityProfile.name()),
+                security_profile_setting,
             ],
         )
 
@@ -552,44 +582,29 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         log: Logger,
     ) -> None:
         self.host_node.shell.mkdir(Path(self.vm_disks_dir), exist_ok=True)
-        for node in environment.nodes.list():
-            self._log.debug(f"==>node: {node.name}")
-            if node.capability.features:
-                new_settings = search_space.SetSpace[schema.FeatureSettings](
-                    is_allow_set=True
-                )
-                for current_settings in node.capability.features.items:
-                    # reload to type specified settings
-                    try:
-                        settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type,
-                            BaseLibvirtPlatform.supported_features(),
-                        )
-                    except NotMeetRequirementException as identifier:
-                        raise LisaException(
-                            f"platform doesn't support all features. {identifier}"
-                        )
-                    new_setting = schema.load_by_type(settings_type, current_settings)
-                    existing_setting = feature.get_feature_settings_by_name(
-                        new_setting.type, new_settings, True
-                    )
-                    if existing_setting:
-                        new_settings.remove(existing_setting)
-                        new_setting = existing_setting.intersect(new_setting)
-                    new_settings.add(new_setting)
-                node.capability.features = new_settings
 
-                for f in node.capability.features:
-                    feature_type = next(
-                        x for x in self.supported_features() if x.name() == f.type
-                    )
-                    self._log.debug(f"==>f: {f}")
-                    feature_type.on_before_deployment(
-                        environment=environment,
-                        log=log,
-                        settings=f,
-                    )
+        features_settings: Dict[str, schema.FeatureSettings] = {}
 
+        # collect all the features to handle special deployment logic. If one
+        # node has this, it needs to run.
+        for node_space in environment.runbook.nodes_requirement:
+            for feature_setting in node_space.features.items:
+                if feature_setting.type not in features_settings:
+                    features_settings[feature_setting.type] = feature_setting
+
+        # change deployment for each feature.
+        for feature_type, setting in [
+            (t, s)
+            for t in self.supported_features()
+            for s in node_space.features
+            if t.name() == s.type
+        ]:
+            feature_type.on_before_deployment(
+                environment=environment,
+                log=log,
+                settings=setting,
+            )
+        
         for node in environment.nodes.list():
             node_context = get_node_context(node)
             self._create_node(
@@ -874,7 +889,6 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 iso_path,
                 [("/user-data", user_data_string), ("/meta-data", meta_data_string)],
             )
-
             self.host_node.shell.copy(
                 Path(iso_path), Path(node_context.cloud_init_file_path)
             )
