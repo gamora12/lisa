@@ -26,7 +26,10 @@ from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
-from lisa.sut_orchestrator.libvirt.features import SecurityProfile, SecurityProfileSettings
+from lisa.sut_orchestrator.libvirt.features import (
+    SecurityProfile, 
+    SecurityProfileSettings,
+)
 from lisa.tools import (
     Chmod,
     Chown,
@@ -215,14 +218,9 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
 
                     new_settings.add(new_setting)
                 node_space.features = new_settings
-                
+
         return self._configure_node_capabilities(environment, log)
-
-
-
-
-
-        
+   
     def _deploy_environment(self, environment: Environment, log: Logger) -> None:
         self._deploy_nodes(environment, log)
 
@@ -264,7 +262,6 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
 
         host_capabilities = self._get_host_capabilities(log)
         nodes_capabilities = self._create_node_capabilities(host_capabilities)
-        features_runbook = environment.runbook.nodes_requirement[0].features
         nodes_requirement = []
         for node_space in environment.runbook.nodes_requirement:
             # Check that the general node capabilities are compatible with this node's
@@ -604,7 +601,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 log=log,
                 settings=setting,
             )
-        
+
         for node in environment.nodes.list():
             node_context = get_node_context(node)
             self._create_node(

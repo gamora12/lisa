@@ -1,17 +1,12 @@
 from dataclasses import dataclass
-from typing import Any, Type, cast, Optional, List
+from typing import Any, Type, cast
 
 from dataclasses_json import dataclass_json
 
-from lisa import feature, features, schema, search_space
+from lisa import features, schema, search_space
 from lisa.environment import Environment
-from lisa.features.security_profile import (
-    FEATURE_NAME_SECURITY_PROFILE,
-    SecurityProfileType,
-)
+from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import get_node_context
-from .schema import BaseLibvirtNodeSchema
-from .. import CLOUD_HYPERVISOR
 
 
 @dataclass_json()
@@ -56,4 +51,6 @@ class SecurityProfile(features.SecurityProfile):
                 assert isinstance(settings, SecurityProfileSettings)
                 assert isinstance(settings.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
-                node_context.guest_vm_type = cls._security_profile_mapping[settings.security_profile]
+                node_context.guest_vm_type = cls._security_profile_mapping[
+                    settings.security_profile
+                ]
