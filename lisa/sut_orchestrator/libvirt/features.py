@@ -28,6 +28,7 @@ class SecurityProfileSettings(features.SecurityProfileSettings):
         value.security_profile = super_value.security_profile
         return value
 
+
 class SecurityProfile(features.SecurityProfile):
     _security_profile_mapping = {
         SecurityProfileType.Standard: "",

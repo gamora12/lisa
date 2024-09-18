@@ -27,8 +27,8 @@ from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
 from lisa.sut_orchestrator.libvirt.features import (
-    SecurityProfile, 
     SecurityProfileSettings,
+    SecurityProfile,
 )
 from lisa.tools import (
     Chmod,
@@ -196,13 +196,16 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         self._configure_environment(environment, log)
         for node_space in environment.runbook.nodes_requirement:
             if node_space.features:
-                new_settings = search_space.SetSpace[schema.FeatureSettings](is_allow_set=True)
+                new_settings = search_space.SetSpace[
+                    schema.FeatureSettings
+                ](is_allow_set=True)
 
                 for current_settings in node_space.features.items:
                     # reload to type specified settings
                     try:
                         settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type, BaseLibvirtPlatform.supported_features()
+                            current_settings.type, 
+                            BaseLibvirtPlatform.supported_features()
                         )
                     except NotMeetRequirementException as identifier:
                         raise LisaException(
@@ -220,7 +223,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 node_space.features = new_settings
 
         return self._configure_node_capabilities(environment, log)
-   
+
     def _deploy_environment(self, environment: Environment, log: Logger) -> None:
         self._deploy_nodes(environment, log)
 
