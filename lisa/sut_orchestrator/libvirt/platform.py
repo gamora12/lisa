@@ -23,7 +23,7 @@ import yaml
 from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
-from lisa.features.security_profile import SecurityProfileType
+from lisa.features.security_profile import SecurityProfile
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
@@ -67,9 +67,9 @@ from .schema import (
     BaseLibvirtPlatformSchema,
     DiskImageFormat,
 )
+from .features import SecurityProfileSettings
 from .serial_console import SerialConsole
 from .start_stop import StartStop
-from .features import SecurityProfileSettings
 
 # Host environment information fields
 KEY_HOST_DISTRO = "host_distro"
