@@ -194,7 +194,9 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         self._configure_environment(environment, log)
         for node_space in environment.runbook.nodes_requirement:
             if node_space.features:
-                new_settings = search_space.SetSpace[schema.FeatureSettings]
+                new_settings = search_space.SetSpace[schema.FeatureSettings](
+                    is_allow_set=True
+                )
                 for current_settings in node_space.features.items:
                     # reload to type specified settings
                     try:
@@ -591,7 +593,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         for feature_type, setting in [
             (t, s)
             for t in self.supported_features()
-            for s in node_space.features
+            for s in features_settings.values()
             if t.name() == s.type
         ]:
             feature_type.on_before_deployment(
