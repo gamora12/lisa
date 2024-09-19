@@ -49,6 +49,7 @@ from lisa.util import (
     get_public_key_data,
 )
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
+from lisa.features.security_profile import SecurityProfileSettings
 
 from . import libvirt_events_thread
 from .console_logger import QemuConsoleLogger
@@ -67,7 +68,6 @@ from .schema import (
     BaseLibvirtPlatformSchema,
     DiskImageFormat,
 )
-from .features import SecurityProfileSettings
 from .serial_console import SerialConsole
 from .start_stop import StartStop
 
