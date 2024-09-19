@@ -194,9 +194,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         self._configure_environment(environment, log)
         for node_space in environment.runbook.nodes_requirement:
             if node_space.features:
-                new_settings = search_space.SetSpace[
-                    schema.FeatureSettings
-                ](is_allow_set=True)
+                new_settings = search_space.SetSpace[schema.FeatureSettings]
                 for current_settings in node_space.features.items:
                     # reload to type specified settings
                     try:
