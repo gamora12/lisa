@@ -193,7 +193,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
 
         self._configure_environment(environment, log)
         for node_space in environment.runbook.nodes_requirement:
-            if node_space.features:
+            if node_space and node_space.features:
                 new_settings = search_space.SetSpace[schema.FeatureSettings](
                     is_allow_set=True
                 )
@@ -585,9 +585,10 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         # collect all the features to handle special deployment logic. If one
         # node has this, it needs to run.
         for node_space in environment.runbook.nodes_requirement:
-            for feature_setting in node_space.features:
-                if feature_setting.type not in features_settings:
-                    features_settings[feature_setting.type] = feature_setting
+            if node_space:
+                for feature_setting in node_space.features:
+                    if feature_setting.type not in features_settings:
+                        features_settings[feature_setting.type] = feature_setting
 
         # change deployment for each feature.
         for feature_type, setting in [
