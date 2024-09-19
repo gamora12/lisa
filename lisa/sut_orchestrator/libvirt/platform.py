@@ -192,32 +192,33 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         _ = environment.log_path
 
         self._configure_environment(environment, log)
-        for node_space in environment.runbook.nodes_requirement:
-            if node_space.features is not None:
-                new_settings = search_space.SetSpace[schema.FeatureSettings](
-                    is_allow_set=True
-                )
-                for current_settings in node_space.features.items:
-                    # reload to type specified settings
-                    try:
-                        settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type,
-                            BaseLibvirtPlatform.supported_features(),
-                        )
-                    except NotMeetRequirementException as identifier:
-                        raise LisaException(
-                            f"platform doesn't support all features. {identifier}"
-                        )
-                    new_setting = schema.load_by_type(settings_type, current_settings)
-                    existing_setting = feature.get_feature_settings_by_name(
-                        new_setting.type, new_settings, True
+        if environment.runbook.nodes_requirement is not None:
+            for node_space in environment.runbook.nodes_requirement:
+                if node_space.features is not None:
+                    new_settings = search_space.SetSpace[schema.FeatureSettings](
+                        is_allow_set=True
                     )
-                    if existing_setting:
-                        new_settings.remove(existing_setting)
-                        new_setting = existing_setting.intersect(new_setting)
+                    for current_settings in node_space.features.items:
+                        # reload to type specified settings
+                        try:
+                            settings_type = feature.get_feature_settings_type_by_name(
+                                current_settings.type,
+                                BaseLibvirtPlatform.supported_features(),
+                            )
+                        except NotMeetRequirementException as identifier:
+                            raise LisaException(
+                                f"platform doesn't support all features. {identifier}"
+                            )
+                        new_setting = schema.load_by_type(settings_type, current_settings)
+                        existing_setting = feature.get_feature_settings_by_name(
+                            new_setting.type, new_settings, True
+                        )
+                        if existing_setting:
+                            new_settings.remove(existing_setting)
+                            new_setting = existing_setting.intersect(new_setting)
 
-                    new_settings.add(new_setting)
-                node_space.features = new_settings
+                        new_settings.add(new_setting)
+                    node_space.features = new_settings
 
         return self._configure_node_capabilities(environment, log)
 
@@ -584,8 +585,11 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
 
         # collect all the features to handle special deployment logic. If one
         # node has this, it needs to run.
-        for node_space in environment.runbook.nodes_requirement:
-            if node_space.features is not None:
+        node_requirement = environment.runbook.nodes_requirement
+        if node_requirement is not None:
+            for node_space in node_requirement:
+                if node_space.features is None:
+                    continue
                 for feature_setting in node_space.features:
                     if feature_setting.type not in features_settings:
                         features_settings[feature_setting.type] = feature_setting
