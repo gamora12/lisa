@@ -26,7 +26,6 @@ from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
-from lisa.sut_orchestrator.libvirt.features import SecurityProfileSettings, SecurityProfile
 from lisa.tools import (
     Chmod,
     Chown,
@@ -69,6 +68,11 @@ from .schema import (
 )
 from .serial_console import SerialConsole
 from .start_stop import StartStop
+from .features import (
+    SecurityProfileSettings, 
+    SecurityProfile,
+)
+
 
 # Host environment information fields
 KEY_HOST_DISTRO = "host_distro"
