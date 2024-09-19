@@ -209,7 +209,9 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                             raise LisaException(
                                 f"platform doesn't support all features. {identifier}"
                             )
-                        new_setting = schema.load_by_type(settings_type, current_settings)
+                        new_setting = schema.load_by_type(
+                            settings_type, current_settings
+                        )
                         existing_setting = feature.get_feature_settings_by_name(
                             new_setting.type, new_settings, True
                         )
