@@ -68,6 +68,7 @@ from .schema import (
 )
 from .serial_console import SerialConsole
 from .start_stop import StartStop
+from .security_profile import SecurityProfile
 from .features import SecurityProfileSettings
 
 # Host environment information fields
