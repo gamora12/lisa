@@ -49,7 +49,6 @@ from lisa.util import (
     get_public_key_data,
 )
 from lisa.util.logger import Logger, filter_ansi_escape, get_logger
-from lisa.features.security_profile import SecurityProfileSettings
 
 from . import libvirt_events_thread
 from .console_logger import QemuConsoleLogger
@@ -60,6 +59,7 @@ from .context import (
     get_environment_context,
     get_node_context,
 )
+from .features import SecurityProfileSettings
 from .platform_interface import IBaseLibvirtPlatform
 from .schema import (
     FIRMWARE_TYPE_BIOS,
