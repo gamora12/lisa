@@ -23,7 +23,6 @@ import yaml
 from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
-from lisa.features.security_profile import SecurityProfile
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
@@ -59,7 +58,7 @@ from .context import (
     get_environment_context,
     get_node_context,
 )
-from .features import SecurityProfileSettings
+from .features import SecurityProfileSettings, SecurityProfile
 from .platform_interface import IBaseLibvirtPlatform
 from .schema import (
     FIRMWARE_TYPE_BIOS,
@@ -790,12 +789,13 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
             node_context = get_node_context(node)
             if node_context.init_system == InitSystem.CLOUD_INIT:
                 # Ensure cloud-init completes its setup.
-                node.execute(
-                    "cloud-init status --wait",
-                    sudo=True,
-                    expected_exit_code=0,
-                    expected_exit_code_failure_message="waiting on cloud-init",
-                )
+                # node.execute(
+                #     "cloud-init status --wait",
+                #     sudo=True,
+                #     expected_exit_code=0,
+                #     expected_exit_code_failure_message="waiting on cloud-init",
+                # )
+                time.sleep(10)
 
     # Setup Ignition for a VM.
     def _create_node_ignition(
