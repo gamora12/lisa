@@ -26,10 +26,7 @@ from lisa.feature import Feature
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
-from lisa.sut_orchestrator.libvirt.features import (
-    SecurityProfileSettings,
-    SecurityProfile,
-)
+from lisa.sut_orchestrator.libvirt.features import SecurityProfileSettings, SecurityProfile
 from lisa.tools import (
     Chmod,
     Chown,
@@ -199,7 +196,6 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 new_settings = search_space.SetSpace[
                     schema.FeatureSettings
                 ](is_allow_set=True)
-
                 for current_settings in node_space.features.items:
                     # reload to type specified settings
                     try:
@@ -588,7 +584,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         # collect all the features to handle special deployment logic. If one
         # node has this, it needs to run.
         for node_space in environment.runbook.nodes_requirement:
-            for feature_setting in node_space.features.items:
+            for feature_setting in node_space.features:
                 if feature_setting.type not in features_settings:
                     features_settings[feature_setting.type] = feature_setting
 
