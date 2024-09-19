@@ -197,27 +197,28 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                 new_settings = search_space.SetSpace[schema.FeatureSettings](
                     is_allow_set=True
                 )
-                for current_settings in node_space.features.items:
-                    # reload to type specified settings
-                    try:
-                        settings_type = feature.get_feature_settings_type_by_name(
-                            current_settings.type,
-                            BaseLibvirtPlatform.supported_features(),
+                if node_space.features:
+                    for current_settings in node_space.features.items:
+                        # reload to type specified settings
+                        try:
+                            settings_type = feature.get_feature_settings_type_by_name(
+                                current_settings.type,
+                                BaseLibvirtPlatform.supported_features(),
+                            )
+                        except NotMeetRequirementException as identifier:
+                            raise LisaException(
+                                f"platform doesn't support all features. {identifier}"
+                            )
+                        new_setting = schema.load_by_type(settings_type, current_settings)
+                        existing_setting = feature.get_feature_settings_by_name(
+                            new_setting.type, new_settings, True
                         )
-                    except NotMeetRequirementException as identifier:
-                        raise LisaException(
-                            f"platform doesn't support all features. {identifier}"
-                        )
-                    new_setting = schema.load_by_type(settings_type, current_settings)
-                    existing_setting = feature.get_feature_settings_by_name(
-                        new_setting.type, new_settings, True
-                    )
-                    if existing_setting:
-                        new_settings.remove(existing_setting)
-                        new_setting = existing_setting.intersect(new_setting)
+                        if existing_setting:
+                            new_settings.remove(existing_setting)
+                            new_setting = existing_setting.intersect(new_setting)
 
-                    new_settings.add(new_setting)
-                node_space.features = new_settings
+                        new_settings.add(new_setting)
+                    node_space.features = new_settings
 
         return self._configure_node_capabilities(environment, log)
 
@@ -587,9 +588,10 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         nodes_requirement = environment.runbook.nodes_requirement
         if nodes_requirement:
             for node_space in nodes_requirement:
-                for feature_setting in node_space.features:
-                    if feature_setting.type not in features_settings:
-                        features_settings[feature_setting.type] = feature_setting
+                if node_space.features:
+                    for feature_setting in node_space.features:
+                        if feature_setting.type not in features_settings:
+                            features_settings[feature_setting.type] = feature_setting
 
         # change deployment for each feature.
         for feature_type, setting in [
