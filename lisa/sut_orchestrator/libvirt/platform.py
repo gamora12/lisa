@@ -23,6 +23,7 @@ import yaml
 from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.feature import Feature
+from lisa.features.security_profile import SecurityProfile
 from lisa.node import Node, RemoteNode, local_node_connect
 from lisa.operating_system import CBLMariner
 from lisa.platform_ import Platform
@@ -58,7 +59,7 @@ from .context import (
     get_environment_context,
     get_node_context,
 )
-from .features import SecurityProfileSettings, SecurityProfile
+from .features import SecurityProfileSettings
 from .platform_interface import IBaseLibvirtPlatform
 from .schema import (
     FIRMWARE_TYPE_BIOS,
