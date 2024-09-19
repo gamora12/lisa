@@ -58,8 +58,8 @@ from .context import (
     get_environment_context,
     get_node_context,
 )
-from .platform_interface import IBaseLibvirtPlatform
 from .features import SecurityProfile, SecurityProfileSettings
+from .platform_interface import IBaseLibvirtPlatform
 from .schema import (
     FIRMWARE_TYPE_BIOS,
     FIRMWARE_TYPE_UEFI,
