@@ -788,7 +788,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
 
             node_context = get_node_context(node)
             if node_context.init_system == InitSystem.CLOUD_INIT:
-                Ensure cloud-init completes its setup.
+                # Ensure cloud-init completes its setup.
                 node.execute(
                     "cloud-init status --wait",
                     sudo=True,
