@@ -589,9 +589,10 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
         nodes_requirement = environment.runbook.nodes_requirement
         if nodes_requirement:
             for node_space in nodes_requirement:
-                if node_space.features:
-                    for feature_setting in node_space.features:
-                        if feature_setting.type not in features_settings:
+                if not node_space.features:
+                    continue
+                for feature_setting in node_space.features:
+                    if feature_setting.type not in features_settings:
                             features_settings[feature_setting.type] = feature_setting
 
         # change deployment for each feature.
