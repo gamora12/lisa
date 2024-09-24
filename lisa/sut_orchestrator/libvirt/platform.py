@@ -593,7 +593,7 @@ class BaseLibvirtPlatform(Platform, IBaseLibvirtPlatform):
                     continue
                 for feature_setting in node_space.features:
                     if feature_setting.type not in features_settings:
-                            features_settings[feature_setting.type] = feature_setting
+                        features_settings[feature_setting.type] = feature_setting
 
         # change deployment for each feature.
         for feature_type, setting in [
