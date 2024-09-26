@@ -5,9 +5,8 @@ import libvirt  # type: ignore
 
 from lisa.environment import Environment
 from lisa.node import Node
-
 from .console_logger import QemuConsoleLogger
-from .schema import DiskImageFormat
+from .schema import DeviceAddressSchema, DiskImageFormat
 
 
 @dataclass
@@ -58,10 +57,7 @@ class NodeContext:
     console_logger: Optional[QemuConsoleLogger] = None
     domain: Optional[libvirt.virDomain] = None
 
-
 def get_environment_context(environment: Environment) -> EnvironmentContext:
     return environment.get_context(EnvironmentContext)
-
-
 def get_node_context(node: Node) -> NodeContext:
     return node.get_context(NodeContext)
