@@ -58,7 +58,7 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
 
         assert isinstance(node_runbook, CloudHypervisorNodeSchema)
         node_context = get_node_context(node)
-        if self.host_node.is_remote:
+        if self.host_node.is_remote and node_runbook.kernel:
             if node_runbook.kernel.is_remote_path:
                 node_context.kernel_path = node_runbook.kernel.path
             else:
