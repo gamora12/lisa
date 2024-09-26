@@ -58,16 +58,17 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
 
         assert isinstance(node_runbook, CloudHypervisorNodeSchema)
         node_context = get_node_context(node)
-        if self.host_node.is_remote and node_runbook.kernel:
-            if node_runbook.kernel.is_remote_path:
-                node_context.kernel_path = node_runbook.kernel.path
+        if node_runbook.kernel:
+            if self.host_node.is_remote:
+                if node_runbook.kernel.is_remote_path:
+                    node_context.kernel_path = node_runbook.kernel.path
+                else:
+                    node_context.kernel_source_path = node_runbook.kernel.path
+                    node_context.kernel_path = os.path.join(
+                        self.vm_disks_dir, os.path.basename(node_runbook.kernel.path)
+                    )
             else:
-                node_context.kernel_source_path = node_runbook.kernel.path
-                node_context.kernel_path = os.path.join(
-                    self.vm_disks_dir, os.path.basename(node_runbook.kernel.path)
-                )
-        else:
-            node_context.kernel_path = node_runbook.kernel.path
+                node_context.kernel_path = node_runbook.kernel.path
 
     def _create_node(
         self,
