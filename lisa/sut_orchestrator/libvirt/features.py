@@ -45,10 +45,9 @@ class SecurityProfile(features.SecurityProfile):
     @classmethod
     def on_before_deployment(cls, *args: Any, **kwargs: Any) -> None:
         environment = cast(Environment, kwargs.get("environment"))
-        security_profile = [kwargs.get("settings")]
+        settings = kwargs.get("settings")
         for node in environment.nodes._list:
-            if security_profile:
-                settings = security_profile[0]
+            if settings: 
                 assert isinstance(settings, SecurityProfileSettings)
                 assert isinstance(settings.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
