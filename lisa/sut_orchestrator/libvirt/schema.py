@@ -106,11 +106,13 @@ class QemuNodeSchema(BaseLibvirtNodeSchema):
             self.disk_img = self.qcow2
             self.disk_img_format = DiskImageFormat.QCOW2.value
 
+
 @dataclass_json()
 @dataclass
 class KernelSchema:
     path: str = ""
     is_remote_path: bool = False
+
 
 @dataclass_json()
 @dataclass

@@ -47,7 +47,7 @@ class SecurityProfile(features.SecurityProfile):
         environment = cast(Environment, kwargs.get("environment"))
         settings = kwargs.get("settings")
         for node in environment.nodes._list:
-            if settings: 
+            if settings:
                 assert isinstance(settings, SecurityProfileSettings)
                 assert isinstance(settings.security_profile, SecurityProfileType)
                 node_context = get_node_context(node)
