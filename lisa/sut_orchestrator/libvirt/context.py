@@ -8,7 +8,7 @@ from lisa.environment import Environment
 from lisa.node import Node
 
 from .console_logger import QemuConsoleLogger
-from .schema import DeviceAddressSchema, DiskImageFormat
+from .schema import DiskImageFormat
 
 
 @dataclass
@@ -39,7 +39,7 @@ class GuestVmType(Enum):
     Standard = ""
     ConfidentialVM = "ConfidentialVM"
 
-    
+
 @dataclass
 class NodeContext:
     vm_name: str = ""
