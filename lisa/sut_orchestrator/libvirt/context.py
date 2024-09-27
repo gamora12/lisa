@@ -1,10 +1,12 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
 import libvirt  # type: ignore
 
 from lisa.environment import Environment
 from lisa.node import Node
+
 from .console_logger import QemuConsoleLogger
 from .schema import DeviceAddressSchema, DiskImageFormat
 
@@ -33,11 +35,17 @@ class InitSystem:
 
 
 @dataclass
+class GuestVmType(Enum):
+    Standard = ""
+    ConfidentialVM = "ConfidentialVM"
+
+    
+@dataclass
 class NodeContext:
     vm_name: str = ""
     kernel_source_path: str = ""
     kernel_path: str = ""
-    guest_vm_type: str = ""
+    guest_vm_type: GuestVmType = GuestVmType.Standard
     cloud_init_file_path: str = ""
     ignition_file_path: str = ""
     os_disk_source_file_path: Optional[str] = None
@@ -57,7 +65,10 @@ class NodeContext:
     console_logger: Optional[QemuConsoleLogger] = None
     domain: Optional[libvirt.virDomain] = None
 
+
 def get_environment_context(environment: Environment) -> EnvironmentContext:
     return environment.get_context(EnvironmentContext)
+
+
 def get_node_context(node: Node) -> NodeContext:
     return node.get_context(NodeContext)

@@ -12,7 +12,7 @@ from lisa import schema
 from lisa.environment import Environment
 from lisa.feature import Feature
 from lisa.node import Node
-from lisa.sut_orchestrator.libvirt.context import NodeContext, get_node_context
+from lisa.sut_orchestrator.libvirt.context import NodeContext, GuestVmType, get_node_context
 from lisa.sut_orchestrator.libvirt.platform import BaseLibvirtPlatform
 from lisa.tools import QemuImg
 from lisa.util.logger import Logger, filter_ansi_escape
@@ -121,7 +121,7 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
 
         os_kernel = ET.SubElement(os, "kernel")
         os_kernel.text = node_context.kernel_path
-        if node_context.guest_vm_type == "ConfidentialVM":
+        if node_context.guest_vm_type == GuestVmType.ConfidentialVM:
             launch_sec = ET.SubElement(domain, "launchSecurity")
             launch_sec.attrib["type"] = "sev"
             cbitpos = ET.SubElement(launch_sec, "cbitpos")
