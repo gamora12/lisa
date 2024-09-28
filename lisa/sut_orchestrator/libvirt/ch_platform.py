@@ -19,12 +19,11 @@ from lisa.util.logger import Logger, filter_ansi_escape
 from .. import CLOUD_HYPERVISOR
 from .console_logger import QemuConsoleLogger
 from .schema import BaseLibvirtNodeSchema, CloudHypervisorNodeSchema, DiskImageFormat
-from lisa.sut_orchestrator.libvirt.context import (
-    NodeContext,
+from .context import (
     GuestVmType,
+    NodeContext,
     get_node_context,
 )
-
 
 CH_VERSION_PATTERN = re.compile(r"cloud-hypervisor (?P<ch_version>.+)")
 
