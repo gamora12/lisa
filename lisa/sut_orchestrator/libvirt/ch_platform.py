@@ -16,9 +16,9 @@ from lisa.sut_orchestrator.libvirt.platform import BaseLibvirtPlatform
 from lisa.tools import QemuImg
 from lisa.util.logger import Logger, filter_ansi_escape
 from lisa.sut_orchestrator.libvirt.context import (
+    get_node_context,
     NodeContext,
     GuestVmType,
-    get_node_context,
 )
 
 from .. import CLOUD_HYPERVISOR
