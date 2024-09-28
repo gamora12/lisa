@@ -12,7 +12,11 @@ from lisa import schema
 from lisa.environment import Environment
 from lisa.feature import Feature
 from lisa.node import Node
-from lisa.sut_orchestrator.libvirt.context import GuestVmType, NodeContext, get_node_context
+from lisa.sut_orchestrator.libvirt.context import (
+    GuestVmType,
+    NodeContext,
+    get_node_context,
+)
 from lisa.sut_orchestrator.libvirt.platform import BaseLibvirtPlatform
 from lisa.tools import QemuImg
 from lisa.util.logger import Logger, filter_ansi_escape
