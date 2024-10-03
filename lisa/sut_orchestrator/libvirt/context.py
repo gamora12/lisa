@@ -36,7 +36,7 @@ class InitSystem:
 
 @dataclass
 class GuestVmType(Enum):
-    Standard = ""
+    Standard = "Standard"
     ConfidentialVM = "ConfidentialVM"
 
 

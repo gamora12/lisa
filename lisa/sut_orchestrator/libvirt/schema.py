@@ -117,7 +117,9 @@ class KernelSchema:
 @dataclass_json()
 @dataclass
 class CloudHypervisorNodeSchema(BaseLibvirtNodeSchema):
-    # Local path to the cloud-hypervisor firmware.
+    # DEPRECATED: use the 'kernel' field instead.
     # Can be obatained from:
     # https://github.com/cloud-hypervisor/rust-hypervisor-firmware
+    firmware: str = ""
+    # Local path to the cloud-hypervisor firmware.
     kernel: Optional[KernelSchema] = None
