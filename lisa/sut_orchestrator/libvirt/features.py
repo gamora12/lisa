@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from typing import Any, Type, cast
 
@@ -7,6 +8,8 @@ from lisa import features, schema, search_space
 from lisa.environment import Environment
 from lisa.features.security_profile import SecurityProfileType
 from lisa.sut_orchestrator.libvirt.context import GuestVmType, get_node_context
+from lisa.tools import Dmesg
+from lisa.util import LisaException, get_matched_str
 
 
 @dataclass_json()
@@ -55,3 +58,29 @@ class SecurityProfile(features.SecurityProfile):
             node_context.guest_vm_type = cls._security_profile_mapping[
                 settings.security_profile
             ]
+
+
+class CVMNestedVirtualization(features.CVMNestedVirtualization):
+    @classmethod
+    def create_setting(cls, *args: Any, **kwargs: Any) -> schema.FeatureSettings:
+        resource_sku: Any = kwargs.get("resource_sku")
+        if resource_sku.family.casefold() in [
+            "standarddcaccv5family",
+            "standardecaccv5family",
+            "standarddcadccv5family",
+            "standardecadccv5family",
+        ]:
+            __sev_enabled_pattern = re.compile(r"mshv: SEV-SNP is supported")
+            environment = cast(Environment, kwargs.get("environment"))
+            for node in environment.nodes._list:
+                dmesg: str = node.tools[Dmesg].get_output(force_run=True)
+                is_sev_enabled: str = get_matched_str(
+                    pattern=__sev_enabled_pattern,
+                    content=dmesg,
+                    first_match=True,
+                )
+                if not is_sev_enabled:
+                    raise LisaException("SEV_SNP is not enabled")
+        else:
+            raise LisaException("Nested CVM is not supported on this resource sku.")
+        return schema.FeatureSettings()
