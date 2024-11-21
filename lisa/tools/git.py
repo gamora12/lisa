@@ -89,7 +89,7 @@ class Git(Tool):
         else:
             stdout = result.stdout
             output = result.stderr
-            print(f"stdout: {stdout}")
+            print(f"stdout: {output}")
             code_dir = get_matched_str(stdout, self.CODE_FOLDER_ON_EXISTS_PATTERN)
             if code_dir:
                 if fail_on_exists:
