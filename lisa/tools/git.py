@@ -68,8 +68,8 @@ class Git(Tool):
         cmd3 = "lsblk"
         # git print to stderr for normal info, so set no_error_log to True.
         result = self.run(cmd, cwd=cwd, no_error_log=True, timeout=timeout)
-        result2 = self.run(cmd2, no_error_log=True, timeout=timeout)
-        result3 = self.run(cmd3, no_error_log=True, timeout=timeout)
+        result2 = self.run(cmd2)
+        result3 = self.run(cmd3)
         if get_matched_str(result.stdout, self.CERTIFICATE_ISSUE_PATTERN):
             self.run("config --global http.sslverify false")
             result = self.run(
