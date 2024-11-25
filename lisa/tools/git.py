@@ -93,7 +93,7 @@ class Git(Tool):
             output = result.stderr
             op2 = result2.stdout
             op3 = result3.stdout
-            print(f"stdout: {stdout}, {output}, {op2}, {op3}")
+            print(f"stdout: debug output->{stdout}, {output}, {op2}, {op3}")
             code_dir = get_matched_str(stdout, self.CODE_FOLDER_ON_EXISTS_PATTERN)
             if code_dir:
                 if fail_on_exists:
