@@ -64,8 +64,8 @@ class Git(Tool):
         if auth_token:
             auth_flag = f'-c http.extraheader="AUTHORIZATION: bearer {auth_token}"'
         cmd = f"clone {auth_flag} {url} {dir_name} --recurse-submodules"
-        cmd2 = f"df -kh"
-        cmd3 = f"lsblk"
+        cmd2 = "df -kh"
+        cmd3 = "lsblk"
         # git print to stderr for normal info, so set no_error_log to True.
         result = self.run(cmd, cwd=cwd, no_error_log=True, timeout=timeout)
         result2 = self.run(cmd2, cwd=cwd, no_error_log=True, timeout=timeout)
