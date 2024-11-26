@@ -64,12 +64,8 @@ class Git(Tool):
         if auth_token:
             auth_flag = f'-c http.extraheader="AUTHORIZATION: bearer {auth_token}"'
         cmd = f"clone {auth_flag} {url} {dir_name} --recurse-submodules"
-        cmd2 = "df -kh"
-        cmd3 = "lsblk"
         # git print to stderr for normal info, so set no_error_log to True.
         result = self.run(cmd, cwd=cwd, no_error_log=True, timeout=timeout)
-        result2 = self.run(cmd2)
-        result3 = self.run(cmd3)
         if get_matched_str(result.stdout, self.CERTIFICATE_ISSUE_PATTERN):
             self.run("config --global http.sslverify false")
             result = self.run(
@@ -91,9 +87,7 @@ class Git(Tool):
         else:
             stdout = result.stdout
             output = result.stderr
-            op2 = result2.stdout
-            op3 = result3.stdout
-            print(f"stdout: debug output->{stdout}, {output}, {op2}, {op3}")
+            print(f"stdout: debug output->{stdout}, {output}")
             code_dir = get_matched_str(stdout, self.CODE_FOLDER_ON_EXISTS_PATTERN)
             if code_dir:
                 if fail_on_exists:

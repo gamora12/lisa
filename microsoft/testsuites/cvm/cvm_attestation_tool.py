@@ -199,7 +199,11 @@ class NestedCVMAttestationTests(Tool):
                 expected_exit_code_failure_message="failed to get $HOME via echo",
             ).stdout
         )
-
+        result1 = self.node.execute("df -kh")
+        result2 = self.node.execute("lsblk")
+        output1 = result1.stdout
+        output2 = result2.stdout
+        print(f"df -kh: {output1}, lsblk: {output2}")
         git.clone(self.repo, Path(root_path))
         make = self.node.tools[Make]
         make.make("", cwd=self.snp_report_tool_path)
