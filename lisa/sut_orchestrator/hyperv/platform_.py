@@ -331,7 +331,7 @@ class HypervPlatform(Platform):
 
     def _delete_nodes(self, environment: Environment, log: Logger) -> None:
         def _delete_node(node_ctx: NodeContext, wait_delete: bool) -> None:
-            hv = self._server.tools[HyperV]
+            # hv = self._server.tools[HyperV]
             vm_name = node_ctx.vm_name
 
             # Reassign passthrough devices to host before VM is deleted
