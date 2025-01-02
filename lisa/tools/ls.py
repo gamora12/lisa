@@ -106,7 +106,8 @@ class WindowsLs(Ls):
             sudo=sudo,
         )
         if output:
-            return List(output.split())
+            return list(output.split())
+        # can fail due to insufficient permissions, non existent
         else:
             return []
 
