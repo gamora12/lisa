@@ -165,7 +165,7 @@ class HyperV(Tool):
         timeout_start = time.time()
         is_ready = False
         self._log.debug(f"Waiting for VM {name} to start")
-        while time.time() - timeout_start < 600:
+        while time.time() - timeout_start < 1200:
             try:
                 if self.get_ip_address(name):
                     self._log.debug(f"VM {name} is ready")
