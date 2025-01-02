@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Type, Union
 from lisa import schema
 from lisa.feature import Feature
 from lisa.operating_system import BSD
-from lisa.tools import Mount
+from lisa.tools import Ls, Mount
 from lisa.tools.mount import PartitionInfo
 from lisa.util import LisaException, get_matched_str
 
@@ -68,6 +68,7 @@ class Disk(Feature):
 
     def _initialize(self, *args: Any, **kwargs: Any) -> None:
         self.disks: List[str] = []
+        self._os_disk_controller_type: Optional[schema.DiskControllerType] = None
 
     def get_resource_disk_mount_point(self) -> str:
         raise NotImplementedError
@@ -81,12 +82,18 @@ class Disk(Feature):
     def get_luns(self) -> Dict[str, int]:
         raise NotImplementedError
 
-    # Get boot partition of VM by looking for "/boot" and "/boot/efi"
+    # Get boot partition of VM by looking for "/boot", "/boot/efi", and "/efi"
     def get_os_boot_partition(self) -> Optional[PartitionInfo]:
+        # We need to access /efi to force systemd to
+        # mount the boot partition on some distros.
+        self._node.tools[Ls].path_exists("/efi", sudo=True)
+
         partition_info = self._node.tools[Mount].get_partition_info()
         boot_partition: Optional[PartitionInfo] = None
         for partition in partition_info:
-            if partition.mount_point.startswith("/boot"):
+            if partition.mount_point.startswith(
+                "/boot"
+            ) or partition.mount_point.startswith("/efi"):
                 boot_partition = partition
                 if isinstance(self._node.os, BSD):
                     # Get the device name from the GPT since they are abstracted
@@ -130,10 +137,13 @@ class Disk(Feature):
 
     # Get disk controller type from the VM by checking the boot partition
     def get_os_disk_controller_type(self) -> schema.DiskControllerType:
-        boot_partition = self.get_os_boot_partition()
-        assert boot_partition, "'boot_partition' must not be 'None'"
-        os_disk_controller_type = self.get_disk_type(boot_partition.disk)
-        return schema.DiskControllerType(os_disk_controller_type)
+        if self._os_disk_controller_type is None:
+            boot_partition = self.get_os_boot_partition()
+            assert boot_partition, "'boot_partition' must not be 'None'"
+            self._os_disk_controller_type = schema.DiskControllerType(
+                self.get_disk_type(boot_partition.disk)
+            )
+        return self._os_disk_controller_type
 
 
 DiskEphemeral = partial(

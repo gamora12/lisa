@@ -121,7 +121,10 @@ class NestedCVMAttestationTestSuite(TestSuite):
         result: TestResult,
         variables: Dict[str, Any],
     ) -> None:
-        host_data = variables.get("host_data", "")
+        from lisa.sut_orchestrator.libvirt.context import get_node_context
+
+        node_context = get_node_context(node)
+        host_data = node_context.host_data
         if not host_data:
             raise SkippedException("host_data is empty")
         node.tools[NestedCVMAttestationTests].run_cvm_attestation(
