@@ -8,7 +8,7 @@ from lisa import feature, schema, search_space
 from lisa.environment import Environment
 from lisa.node import RemoteNode
 from lisa.platform_ import Platform
-from lisa.tools import Cp, HyperV, Mkdir, PowerShell
+from lisa.tools import Cp, HyperV, Mkdir, Mount, PowerShell
 from lisa.util import LisaException, constants
 from lisa.util.logger import Logger, get_logger
 from lisa.util.parallel import run_in_parallel
@@ -315,6 +315,8 @@ class HypervPlatform(Platform):
                 address=ip_addr, username=username, password=password
             )
 
+            self._increase_root_partition_size(node)
+
     def _resize_vhd_if_needed(
         self, vhd_path: PurePath, node_runbook: HypervNodeSchema
     ) -> None:
@@ -325,6 +327,16 @@ class HypervPlatform(Platform):
                 f"Resize-VHD -Path {vhd_path} "
                 f"-SizeBytes {node_runbook.osdisk_size_in_gb * 1024 * 1024 * 1024}"
             )
+
+    def _expand_root_partition(self, node: RemoteNode) -> None:
+        root_partition = node.tools[Mount].get_partition_info("/")[0]
+        print(f"root_partition: {root_partition}")
+        root_disk = root_partition.name
+        print(f"root_disk: {root_disk}")
+        root_part_num = root_disk[-1]
+        print(f"root_part_num: {root_part_num}")
+        node.execute(f"growpart {root_disk} {root_part_num}", sudo=True)
+        node.execute(f"resize2fs /dev/{root_disk}", sudo=True)
 
     def _delete_environment(self, environment: Environment, log: Logger) -> None:
         self._delete_nodes(environment, log)
