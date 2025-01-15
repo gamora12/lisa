@@ -315,7 +315,7 @@ class HypervPlatform(Platform):
                 address=ip_addr, username=username, password=password
             )
 
-            self._increase_root_partition_size(node)
+            self._expand_root_partition(node)
 
     def _resize_vhd_if_needed(
         self, vhd_path: PurePath, node_runbook: HypervNodeSchema
@@ -329,14 +329,20 @@ class HypervPlatform(Platform):
             )
 
     def _expand_root_partition(self, node: RemoteNode) -> None:
+        # Get the root partition info
         root_partition = node.tools[Mount].get_partition_info("/")[0]
-        print(f"root_partition: {root_partition}")
-        root_disk = root_partition.name
-        print(f"root_disk: {root_disk}")
-        root_part_num = root_disk[-1]
-        print(f"root_part_num: {root_part_num}")
-        node.execute(f"growpart {root_disk} {root_part_num}", sudo=True)
-        node.execute(f"resize2fs /dev/{root_disk}", sudo=True)
+        device_name= root_partition.name
+        partition = root_partition.disk
+        root_part_num = device_name[-1]
+        # Grow the partition and resize the filesystem
+        cmd_result = node.execute(f"growpart /dev/{partition} {root_part_num}", sudo=True)
+        # In case, the partition is already expanded to full disk size, the command will print-
+        # NOCHANGE: partition 2 is size <size>. it cannot be grown
+        # In this case, it returns exit code 1 which we can ignore
+        if cmd_result.exit_code != 0 and "NOCHANGE" not in cmd_result.stdout:
+            raise LisaException(f"Failed to grow partition: {cmd_result.stdout}")
+        node.execute(f"resize2fs {device_name}", sudo=True)
+
 
     def _delete_environment(self, environment: Environment, log: Logger) -> None:
         self._delete_nodes(environment, log)
