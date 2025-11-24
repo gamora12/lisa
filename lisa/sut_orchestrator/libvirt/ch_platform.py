@@ -154,7 +154,7 @@ class CloudHypervisorPlatform(BaseLibvirtPlatform):
         # - ignore_loglevel       : show all kernel messages
         # - printk.time=1         : add timestamps to kernel messages
         os_cmdline = ET.SubElement(os, "cmdline")
-        os_cmdline.text = "console=ttyS0,115200 ignore_loglevel printk.time=1"
+        os_cmdline.text = "console=ttyAMA0,115200 loglevel=8 printk.time=1"
         if node_context.guest_vm_type is GuestVmType.ConfidentialVM:
             attrb_type = "sev"
             attrb_host_data = "host_data"
