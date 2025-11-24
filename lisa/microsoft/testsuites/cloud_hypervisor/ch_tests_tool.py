@@ -1091,6 +1091,7 @@ exit $ec
             git.clone(self.upstream_repo, clone_path)
 
         if isinstance(self.node.os, CBLMariner):
+            self.node.execute("sudo tdnf install -y dmidecode", expected_exit_code=0)
             docker_config_dir = "/etc/docker/"
 
             docker_config: Dict[str, Any] = {}
