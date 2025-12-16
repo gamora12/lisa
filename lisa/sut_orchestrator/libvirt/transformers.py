@@ -326,7 +326,8 @@ class LibvirtSourceInstaller(LibvirtInstaller):
 
     def _build_and_install(self, code_path: PurePath) -> None:
         self._node.execute(
-            "meson build -D driver_ch=enabled -D driver_qemu=disabled \\"
+            "meson setup build -Ddocs=disabled -Dman=disabled "
+            "-D driver_ch=enabled -D driver_qemu=disabled \\"
             "-D driver_openvz=disabled -D driver_esx=disabled \\"
             "-D driver_vmware=disabled  -D driver_lxc=disabled \\"
             "-D driver_libxl=disabled -D driver_vbox=disabled \\"
