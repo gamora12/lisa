@@ -547,7 +547,7 @@ class CloudHypervisorBinaryInstaller(CloudHypervisorInstaller):
         wget = self._node.tools[Wget]
         file_url = (
             "https://github.com/cloud-hypervisor/cloud-hypervisor/"
-            f"releases/download/{release_tag}/cloud-hypervisor"
+            f"releases/download/{release_tag}/cloud-hypervisor-static"
         )
 
         try:
