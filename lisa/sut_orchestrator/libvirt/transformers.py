@@ -330,6 +330,7 @@ class LibvirtSourceInstaller(LibvirtInstaller):
             "glibc-devel",
             "glib-devel",
             "gnutls-devel",
+            "json-c-devel",
             "libnl3-devel",
             "libtirpc-devel",
             "curl-devel",
