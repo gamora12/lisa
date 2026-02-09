@@ -305,6 +305,9 @@ class LibvirtSourceInstaller(LibvirtInstaller):
             "glibc-devel",
             "glib-devel",
             "gnutls-devel",
+            "libxslt-devel",
+            "libxml2"
+            "python3-docutils"
             "libnl3-devel",
             "libtirpc-devel",
             "curl-devel",
