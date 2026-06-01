@@ -680,7 +680,10 @@ class CloudHypervisorTests(Tool):
         if only:
             cmd_args = f"{cmd_args} --test-filter {shlex.quote(only)}"
         if skip:
-            cmd_args = f"{cmd_args} --test-exclude {shlex.quote(skip)}"
+            # Add --test-exclude flag for each comma-separated exclusion
+            skip_tests = [s.strip() for s in skip.split(",") if s.strip()]
+            for skip_test in skip_tests:
+                cmd_args = f"{cmd_args} --test-exclude {shlex.quote(skip_test)}"
         if subtest_timeout:
             cmd_args = f"{cmd_args} --timeout {subtest_timeout}"
         return cmd_args
