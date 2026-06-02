@@ -496,6 +496,8 @@ class CloudHypervisorTests(Tool):
             numa_cmd = self._get_numa_prefix()
 
         result = None
+        self._log.debug("Metrics cmd_args: %s", cmd_args)
+
         try:
             result = self._run_with_enhanced_diagnostics(
                 cmd_args=cmd_args,
