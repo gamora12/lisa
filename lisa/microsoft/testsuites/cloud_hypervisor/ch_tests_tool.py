@@ -682,7 +682,10 @@ class CloudHypervisorTests(Tool):
         if only:
             cmd_args = f"{cmd_args} --test-filter {shlex.quote(only)}"
         if skip:
-            cmd_args = f"{cmd_args} --test-exclude {shlex.quote(skip)}"
+            # Cloud Hypervisor metrics test runner only accepts a single --test-exclude
+            # flag with comma-separated test names. Pass them as-is without individual
+            # quoting to allow proper parsing of the comma-separated list.
+            cmd_args = f"{cmd_args} --test-exclude {skip}"
         if subtest_timeout:
             cmd_args = f"{cmd_args} --timeout {subtest_timeout}"
         return cmd_args
